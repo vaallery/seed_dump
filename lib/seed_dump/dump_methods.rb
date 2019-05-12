@@ -18,11 +18,9 @@ class SeedDump
     def dump_record(record, options)
       attribute_strings = []
 
-      # We select only string attribute names to avoid conflict
-      # with the composite_primary_keys gem (it returns composite
-      # primary key attribute names as hashes).
-      record.attributes.select {|key| key.is_a?(String) || key.is_a?(Symbol) }.each do |attribute, value|
-        attribute_strings << dump_attribute_new(attribute, value, options) unless options[:exclude].include?(attribute.to_sym)
+      # Sometimes attributes and attribute_names return different orders
+      record.attribute_names.each do |attribute|
+        attribute_strings << dump_attribute_new(attribute, record[attribute], options) unless options[:exclude].include?(attribute.to_sym)
       end
 
       open_character, close_character = options[:import] ? ['[', ']'] : ['{', '}']
