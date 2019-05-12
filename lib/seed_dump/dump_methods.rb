@@ -83,10 +83,12 @@ class SeedDump
                              :enumerable_enumeration
                            end
 
+      batch_delimiter = options[:batch_delimiter] || ''
+
       send(enumeration_method, records, io, options) do |record_strings, last_batch|
         io.write(record_strings.join(",\n  "))
 
-        io.write(",\n  ") unless last_batch
+        io.write(",\n  #{batch_delimiter}") unless last_batch
       end
 
       io.write("\n]#{active_record_import_options(options)})\n")
